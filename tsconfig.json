@@ -4,6 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "esnext",
+    "declaration": true,
     "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {

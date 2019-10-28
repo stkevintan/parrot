@@ -1,8 +1,11 @@
 {
-  "name": "parrot",
-  "version": "0.1.0",
+  "name": "@stkevintan/parrot",
+  "version": "0.1.2",
   "description": "convert yapi or swagger json to typescript code",
-  "main": "index.ts",
+  "main": "dist/index.ts",
+  "scripts": {
+    "build": "tsc --outDir dist"
+  },
   "author": "Kevin Tan",
   "license": "MIT",
   "dependencies": {
