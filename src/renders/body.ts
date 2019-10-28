@@ -1,16 +1,11 @@
-import { Context } from '../type'
+import { Context, TagDescr } from '../type'
 
-interface TagDescr {
-  name: string
-  description?: string
-  apis: { name: string; description?: string }[]
-}
-export const parseBody = ({
+export const renderBody = ({
   swagger,
   options,
   buffer,
-  interfaceDict,
-  env
+  fns: interfaceDict,
+  renders
 }: Context) => {
   if (swagger.tags === undefined) return
 
@@ -45,8 +40,8 @@ export const parseBody = ({
     }
   }
 
-  const body = env.render('body.njk', {
-    tags: tagDict.entries()
+  const body = renders.body({
+    tags: [...tagDict.entries()]
   })
   buffer.push(body)
 }

@@ -10,7 +10,7 @@
   */
 {% endif -%}
 function {{name}}({{ params(query, body, path) }}, options?: ClientConfig) {
-  return client.get<{{ query | default("any") }}, {{ body|default("any") }}, {{ path|default("any") }}, {{responce| default("void") }}>("{{url}}", {
+  return client["{{method}}"]<{{ response | default("void") }}>("{{url}}", {
     {{ "params: args.params," if query }}
     {{ "data: args.data," if body }}
     {{ "path: args.path," if path }}

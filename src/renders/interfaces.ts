@@ -1,58 +1,36 @@
-import { Context, Field, InterfaceType } from '../type'
 import {
-  requestMethods,
-  Method,
-  isRef,
-  getInterfaceDesc,
-  getEnumType
-} from '../utils'
+  Context,
+  Field,
+  InterfaceType,
+  ParameterHandler,
+  Method
+} from '../type'
+import { requestMethods, isRef, getInterfaceDesc, getEnumType } from '../utils'
 
 import {
   QueryParameter,
   BodyParameter,
   PathParameter,
-  Operation,
-  Parameter,
   Schema
 } from 'swagger-schema-official'
 
-interface Env {
-  op: Operation
-  getName: (type: InterfaceType) => string
-}
-
-interface InterfaceContext {
-  name: string
-  description?: string
-  field?: Field
-}
-
-type ParameterHandler<T extends Parameter = Parameter> = (
-  compiler: (params: InterfaceContext) => string,
-  data: T[],
-  env: Env
-) => string | undefined
-
-export const parseInterfaces = ({
+export const renderInterfaces = ({
   swagger,
   options,
   buffer,
-  interfaceDict,
-  env
+  fns,
+  renders
 }: Context) => {
-  // const compiler = nunjucks.compile('interfaces.njk', env)
-  const render = (params: InterfaceContext) =>
-    env.render('interface.njk', params)
-
   for (const [pathname, path] of Object.entries(swagger.paths)) {
     for (const key of Object.keys(path)) {
       if (requestMethods.includes(key as any)) {
         const method = key as Method
         const apiName = options.apiNameMapper(pathname, method)
         const op = path[method]!
-        const interfaceDesc = interfaceDict.get(apiName) || {
+        const interfaceDesc = fns.get(apiName) || {
           description: getInterfaceDesc(op),
           tags: op.tags || ['common'],
+          method,
           url: pathname,
           params: {}
         }
@@ -81,9 +59,9 @@ export const parseInterfaces = ({
 
           const env = { op, getName }
           const chunks = [
-            queryHandler(render, queries, env),
-            pathHandler(render, paths, env),
-            bodyHandler(render, bodies, env)
+            queryHandler(renders.interface, queries, env),
+            pathHandler(renders.interface, paths, env),
+            bodyHandler(renders.interface, bodies, env)
           ]
           chunks.forEach(chunk => chunk !== undefined && buffer.push(chunk))
         }
@@ -94,14 +72,13 @@ export const parseInterfaces = ({
         } else if (res.schema) {
           const schema = options.schemaMapper(res.schema)
           buffer.push(
-            render({
+            renders.interface({
               name: getName('response'),
               field: schema2Field(schema)
             })
           )
         }
-        // console.log('set interface Dict', apiName, interfaceDesc)
-        interfaceDict.set(apiName, interfaceDesc)
+        fns.set(apiName, interfaceDesc)
       }
     }
   }

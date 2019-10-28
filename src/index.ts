@@ -27,3 +27,5 @@ export class Parrot {
     return convert(this.swagger, options)
   }
 }
+
+export * from './type'

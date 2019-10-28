@@ -6,7 +6,7 @@ import {
   Operation,
   Schema
 } from 'swagger-schema-official'
-import { InterfaceType } from './type'
+import { InterfaceType, Method } from './type'
 
 const tryRead = promisify(readFile)
 const tryWrite = promisify(writeFile)
@@ -24,7 +24,6 @@ export const writeToFile = async (path: string, content: string) => {
 }
 
 export const requestMethods = ['get', 'post', 'patch', 'put', 'delete'] as const
-export type Method = (typeof requestMethods)[number]
 
 // helper fn
 export const identity = <T>(x: T) => x
