@@ -1,0 +1,48 @@
+{% macro render_comment(comment = "") %}
+{%- if comment -%}
+/**
+  * {{comment}}
+  */
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro render_name(name, required) -%} 
+{{name}}{{ null if required else "?"}}
+{%- endmacro -%}
+
+{%- macro render_property(field) -%}
+{{ render_comment(field.description) }}
+{{ render_name(field.name, field.required) + ":" +  render_type(field) + ";" }}
+{%- endmacro -%}
+
+{%- macro render_type(field) -%}
+{%- if field.type === 'object' -%}
+{ 
+  {%- for property in field.properties -%}
+    {{ render_property(property) }}
+  {% endfor -%}
+}
+{%- elif field.type === 'array' -%}
+{{ render_type(field.items) + '[]' }}
+{%- else -%}
+{{ field.type }}
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro render_interface(name, field) -%}
+{%- if field.type === 'object' -%}
+export interface {{ name }} {{ render_type(field) }}
+{%- elif field.type === 'array' -%}
+{{ render_interface(name+"Item", field.items) }}
+export type {{ name }} = {{ name + "Item[]" }}
+{%- else -%}
+export type {{name}} = {{ field.type }}
+{%- endif -%}
+{%- endmacro -%}
+
+
+
+
+{{ render_comment(description) }}
+{{ render_interface(name, field) }}
+

@@ -1,0 +1,18 @@
+
+{% macro params(query, body, path) %}
+  args: { {{ ("path: " + path + ",") if path }}{{ ("params: " + query + ",") if query }}{{ ("data: " + body + ",") if body }} }
+{% endmacro %}
+
+
+{% if description %}
+/**
+  * {{description}}
+  */
+{% endif -%}
+function {{name}}({{ params(query, body, path) }}, options?: ClientConfig) {
+  return client.get<{{ query | default("any") }}, {{ body|default("any") }}, {{ path|default("any") }}, {{responce| default("void") }}>("{{url}}", {
+    {{ "params: args.params," if query }}
+    {{ "data: args.data," if body }}
+    {{ "path: args.path," if path }}
+  }, options)
+}
