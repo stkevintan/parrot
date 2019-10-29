@@ -2,6 +2,8 @@
 
 Highly customizable tool to fetch the swagger json from yapi and convert it into ts modules with nunjunks template.
 
+![NPM](https://img.shields.io/npm/l/@stkevintan/parrot?style=flat-square) &nbsp; ![GitHub top language](https://img.shields.io/github/languages/top/stkevintan/parrot?style=flat-square) &nbsp; ![npm (scoped)](https://img.shields.io/npm/v/@stkevintan/parrot?style=flat-square) &nbsp; ![David](https://img.shields.io/david/stkevintan/parrot?style=flat-square)
+
 ## Installation
 
 ```shell
