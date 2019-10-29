@@ -20,7 +20,6 @@ export class Parrot {
     stringify = JSON.stringify.bind(JSON)
   ) => {
     await write(path, stringify(this.swagger), { encoding: 'utf8' })
-    console.log('done')
   }
 
   convert = (options: Option) => {

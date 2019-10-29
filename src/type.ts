@@ -48,7 +48,7 @@ export interface Option {
   templates?: {
     [key in Part]?: string
   }
-  apiNameMapper?: (path: string, method: string) => string
+  apiNameMapper?: (path: string, method: Method) => string
   interfaceNameMapper?: (apiName: string, type: InterfaceType) => string
   schemaMapper?: (schema: Schema) => Schema
   out?: string
