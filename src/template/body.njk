@@ -1,20 +1,18 @@
-export const api = Object.freeze({
-  {%- for key, tag in tags %}
+{%- for key, tag in tags %}
+/**
+  * {{ tag.name }} {{ tag.description }}  
+  */
+export const {{ key }} = new (class {{ key | capitalize }} {
+  {%- for api in tag.apis %}
+  {% if api.description %}
   /**
-   * {{ tag.name }} {{ tag.description }}  
-   */
-  {{ key }}: {
-    {%- for api in tag.apis %}
-    {% if api.description %}
-    /**
-     *{{ api.description }}
-     */
-    {% endif -%}
-    {{ api.name }},
-    {% endfor %}
-  },
+    *{{ api.description }}
+    */
+  {% endif -%}
+  readonly {{ api.name }} = {{ api.name }}
   {% endfor %}
-})
+})()
+{% endfor %}
 
 
 
