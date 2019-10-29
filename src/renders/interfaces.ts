@@ -29,7 +29,7 @@ export const renderInterfaces = ({
         const op = path[method]!
         const interfaceDesc = fns.get(apiName) || {
           description: getInterfaceDesc(op),
-          tags: op.tags || ['common'],
+          tags: op.tags || [],
           method,
           url: pathname,
           params: {}

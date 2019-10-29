@@ -1,6 +1,6 @@
 
 {% macro params(query, body, path) %}
-  args: { {{ ("path: " + path + ",") if path }}{{ ("params: " + query + ",") if query }}{{ ("data: " + body + ",") if body }} }
+  {{ ("path: " + path + ",") if path }}{{ ("params: " + query + ",") if query }}{{ ("data: " + body + ",") if body }}
 {% endmacro %}
 
 
@@ -9,10 +9,12 @@
   * {{description}}
   */
 {% endif -%}
-function {{name}}({{ params(query, body, path) }}, options?: ClientConfig) {
-  return client["{{method}}"]<{{ response | default("void") }}>("{{url}}", {
-    {{ "params: args.params," if query }}
-    {{ "data: args.data," if body }}
-    {{ "path: args.path," if path }}
-  }, options)
+function {{name}}({{ params(query, body, path) }} options: Partial<RequestConfig> = {}) {
+  return request<{{ response | default("void") }}>({
+    url: "{{url}}",
+    {{ "params," if query }}
+    {{ "data," if body }}
+    {{ "path," if path }}
+    ...options
+  })
 }

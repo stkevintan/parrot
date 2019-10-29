@@ -13,9 +13,9 @@ export const renderBody = ({
   const tagDict: Map<string, TagDescr> = new Map([
     ['common', { name: '公共接口', description: '公共接口', apis: [] }]
   ])
+
   for (const [index, tag] of swagger.tags.entries()) {
-    const name = options.tagMapper(tag.name)
-    const key: string = name === undefined ? `tag${index}` : name
+    const key: string = options.tagMapper(tag.name) || `tag${index}`
     const interfaces = [...interfaceDict.entries()]
     const tagDescr = tagDict.get(key)
     const currentApis = interfaces
@@ -29,7 +29,7 @@ export const renderBody = ({
         .filter(v => v)
         .join(', ')
       tagDescr.apis = apis.concat(
-        currentApis.filter(api => !apis.some(api2 => (api2.name = api.name)))
+        currentApis.filter(api => !apis.some(api2 => api2.name === api.name))
       )
     } else {
       tagDict.set(key, {

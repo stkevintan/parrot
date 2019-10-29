@@ -171,6 +171,8 @@ export interface BodyContext {
 }
 ```
 
-you can totally rewrite all the template by providing a custom `tplRoot` in options, or you can just replace some specific part by the `templates` options.
+The default templates is written in typescript with `axios`.
 
-the default templates can be found in source: [src/templates](https://github.com/stkevintan/parrot/tree/master/src/template)
+You can totally rewrite all the template by providing a custom `tplRoot` in options, or you can just replace some specific part by the `templates` options.
+
+Source file can be found in: [src/templates](https://github.com/stkevintan/parrot/tree/master/src/template)
