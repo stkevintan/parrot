@@ -66,7 +66,6 @@ export const convert = async (swagger: Spec, options: Option) => {
   const content = buffer.join('\n')
   if (finalOptions.out) {
     await writeToFile(finalOptions.out, content)
-    console.log('write done. lines: ', buffer.length)
   }
   return content
 }
