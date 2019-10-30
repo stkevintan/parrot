@@ -1,6 +1,6 @@
 {
   "name": "@stkevintan/parrot",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "convert yapi or swagger json to typescript code",
   "main": "dist/index",
   "scripts": {
@@ -11,9 +11,8 @@
   "dependencies": {
     "@types/node": "^12.11.5",
     "@types/nunjucks": "^3.1.2",
+    "@types/swagger-schema-official": "^2.0.19",
     "axios": "^0.19.0",
-    "json-to-pretty-yaml": "^1.2.2",
-    "nunjucks": "^3.2.0",
-    "@types/swagger-schema-official": "^2.0.19"
+    "nunjucks": "^3.2.0"
   }
 }
