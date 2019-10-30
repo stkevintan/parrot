@@ -1,6 +1,6 @@
 {
   "name": "@stkevintan/parrot",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "convert yapi or swagger json to typescript code",
   "main": "dist/index",
   "scripts": {

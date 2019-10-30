@@ -1,5 +1,3 @@
-import { readFile, writeFile } from 'fs'
-import { promisify } from 'util'
 import {
   BaseSchema,
   Reference,
@@ -7,21 +5,6 @@ import {
   Schema
 } from 'swagger-schema-official'
 import { InterfaceType, Method } from './type'
-
-const tryRead = promisify(readFile)
-const tryWrite = promisify(writeFile)
-
-export const readFromFile = async (path: string, fail = '') => {
-  try {
-    return await tryRead(path, { encoding: 'utf8' })
-  } catch (err) {
-    return fail
-  }
-}
-
-export const writeToFile = async (path: string, content: string) => {
-  return await tryWrite(path, content, { encoding: 'utf8' })
-}
 
 export const requestMethods = ['get', 'post', 'patch', 'put', 'delete'] as const
 
@@ -73,11 +56,6 @@ export const interfaceNameMapper = (apiName: string, type: InterfaceType) => {
   return `${apiName}${type.replace(/^\w/, word => word.toUpperCase())}`
 }
 
-export const schemaMapper = (schema: Schema): Schema => {
-  if (schema.type !== 'object') return schema
-  if (!schema.properties) return schema
-  if (schema.properties.code && schema.properties.data) {
-    return schema.properties.data
-  }
+export const responseInterceptor = (schema: Schema): Schema => {
   return schema
 }

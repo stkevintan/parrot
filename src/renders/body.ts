@@ -3,7 +3,7 @@ import { Context, TagDescr } from '../type'
 export const renderBody = ({
   swagger,
   options,
-  buffer,
+  writer,
   fns: interfaceDict,
   renders
 }: Context) => {
@@ -43,5 +43,5 @@ export const renderBody = ({
   const body = renders.body({
     tags: [...tagDict.entries()]
   })
-  buffer.push(body)
+  writer.push(body)
 }

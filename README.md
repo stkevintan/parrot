@@ -33,6 +33,13 @@ Parrot.fromRemote(url, headers).then(parrot => parrot.convert({
   templates: {
     // custom the header template
     header: require.resolve('./header.njk')
+  },
+  // only parse the response.data schema to interface 
+  responseInterceptor: schema => {
+    if (schema && schema.properties && schema.properties.data) {
+      return schema.properties.data
+    }
+    return schema
   }
 })).then((content) => {
   console.log('the content is generated with', content.split('\n').length, 'lines')
@@ -51,10 +58,29 @@ Finaly, the outfile `src/api.ts` will be generated, and you can use it as an api
 //src/test.ts
 import * as api from './api'
 
-api.user.getUsers({ params: {} }).then(users => {
+// get with params
+api.user.getUsers({region: "cn"}).then(users => {
   console.log(users)
 })
+
+// post with json body
+api.user.postUser({id: 1, name: 'kevin'}).then(ok => console.log(ok))
+
+// post with formData, version 1
+function uploadV1(file: File) {
+  api.user.postAvatar({ avatar: file, desc: "xxx" }).then(ok => console.log(ok))
+}
+
+// post with formData, version 2
+function uploadV2(file: File) {
+  const form = new FormData()
+  form.append("avatar", file)
+  form.append("desc", "xxx")
+  api.user.postAvatar(form)
+}
+
 ```
+**Notice**: all the api module and functions are type guaranteed. You can import the related interfaces or types as well
 
 ## API Doc
 
@@ -102,7 +128,7 @@ the `Option` interface's definition:
 ```ts
 export type Part = 'header' | 'interface' | 'fn' | 'body'
 
-export type InterfaceType = 'query' | 'path' | 'body' | 'response'
+export type InterfaceType = 'query' | 'path' | 'body' | 'formData' | 'response'
 
 export type Method = 'get' | 'put' | 'patch' | 'post' | 'delete'
 
@@ -114,20 +140,20 @@ export interface Option {
   }
   apiNameMapper?: (path: string, method: Method) => string
   interfaceNameMapper?: (apiName: string, type: InterfaceType) => string
-  schemaMapper?: (schema: Schema) => Schema
+  responseInterceptor?: (schema: Schema) => Schema
   out?: string
 }
 ```
 
-| option              | description                                                                                                    | default                  |
-| ------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| tagMapper           | a function that map the swagger tag to a legal variable name                                                   | `tag => 'tag' + index++` |
-| tplRoot             | templates directory location, which must container the four template part: `header`, `interface`, `fn`, `body` |                          |
-| templates           | custom the templates                                                                                           | {}                       |
-| apiNameMapper       | map the api to a legal function name                                                                           | `path` + `method`        |
-| interfaceNameMapper | generate the interface name                                                                                    | `apiName` + `type`       |
-| schemaMapper        | a pipeline function to tweak the return schema before generate the return interface                            | `schema => schema`       |
-| out                 | the file path to write out                                                                                     |                          |
+| option              | description                                                                                                                                                                                      | default                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------ |
+| tagMapper           | a function that map the swagger tag to a legal variable name                                                                                                                                     | `tag => 'tag' + index++` |
+| tplRoot             | templates directory location, which must container the four template part: `header`, `interface`, `fn`, `body`                                                                                   |                          |
+| templates           | custom the templates                                                                                                                                                                             | {}                       |
+| apiNameMapper       | map the api to a legal function name                                                                                                                                                             | `path` + `method`        |
+| interfaceNameMapper | generate the interface name                                                                                                                                                                      | `apiName` + `type`       |
+| responseInterceptor | a intercept function to preprocess the response schema before generate the interface, it is usefull to extract the exact response type that your api return like `{ code: 0, data: exact_data }` | `schema => schema`       |
+| out                 | the file path to write out                                                                                                                                                                       |                          |
 
 ### Template
 

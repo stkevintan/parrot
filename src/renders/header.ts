@@ -5,5 +5,5 @@ export const renderHeader = (ctx: Context) => {
     basePath: ctx.swagger.basePath || '/'
   })
 
-  ctx.buffer.push(header)
+  ctx.writer.push(header)
 }

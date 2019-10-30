@@ -1,9 +1,8 @@
-import { Option, Context, HeaderContext, Part } from './type'
+import { Option, Context, Part } from './type'
 import {
-  writeToFile,
   apiNameMapper,
   interfaceNameMapper,
-  schemaMapper
+  responseInterceptor
 } from './utils'
 import { Spec } from 'swagger-schema-official'
 import { renderHeader } from './renders/header'
@@ -11,7 +10,8 @@ import { renderBody } from './renders/body'
 import { renderInterfaces } from './renders/interfaces'
 import nunjunks from 'nunjucks'
 import { renderFns } from './renders/fns'
-import { readFileSync } from 'fs'
+import fs from 'fs'
+import { Writer } from './writer'
 
 const defaultOption = {
   tagMapper: () => undefined,
@@ -19,7 +19,7 @@ const defaultOption = {
   tplRoot: __dirname + '/template',
   templates: {},
   interfaceNameMapper,
-  schemaMapper,
+  responseInterceptor,
   out: ''
 }
 
@@ -32,7 +32,7 @@ const createRender = (
     const templatePath = templates[part]
     return templatePath
       ? nunjunks.renderString(
-          readFileSync(templatePath, { encoding: 'utf8' }),
+          fs.readFileSync(templatePath, { encoding: 'utf8' }),
           context
         )
       : env.render(`${part}.njk`, context)
@@ -41,14 +41,14 @@ const createRender = (
 
 export const convert = async (swagger: Spec, options: Option) => {
   const finalOptions: Required<Option> = { ...defaultOption, ...options }
-  const buffer: string[] = []
+  const writer = new Writer(options.out)
 
   const env = nunjunks.configure(finalOptions.tplRoot, { autoescape: false })
 
   const ctx: Context = {
     swagger,
     options: finalOptions,
-    buffer,
+    writer,
     fns: new Map(),
     renders: {
       header: createRender('header', env, options.templates),
@@ -63,9 +63,7 @@ export const convert = async (swagger: Spec, options: Option) => {
   renderFns(ctx)
   renderBody(ctx)
 
-  const content = buffer.join('\n')
-  if (finalOptions.out) {
-    await writeToFile(finalOptions.out, content)
-  }
-  return content
+  writer.done()
+
+  return writer.content
 }

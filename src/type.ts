@@ -1,5 +1,6 @@
 import { Spec, Schema, Operation, Parameter } from 'swagger-schema-official'
 import { requestMethods } from './utils'
+import { Writer } from './writer'
 
 export type ObjectOf<T> = { [key: string]: T }
 
@@ -50,7 +51,7 @@ export interface Option {
   }
   apiNameMapper?: (path: string, method: Method) => string
   interfaceNameMapper?: (apiName: string, type: InterfaceType) => string
-  schemaMapper?: (schema: Schema) => Schema
+  responseInterceptor?: (schema: Schema) => Schema
   out?: string
 }
 
@@ -98,7 +99,7 @@ export interface Context {
   }
   fns: Map<string, FnDescr>
   options: Required<Option>
-  buffer: string[]
+  writer: Writer
 }
 
-export type InterfaceType = 'query' | 'path' | 'body' | 'response'
+export type InterfaceType = 'query' | 'path' | 'body' | 'formData' | 'response'

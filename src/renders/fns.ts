@@ -1,8 +1,8 @@
 import { Context } from '../type'
 
-export const renderFns = ({ buffer, fns, renders }: Context) => {
+export const renderFns = ({ writer, fns, renders }: Context) => {
   for (const [name, fn] of fns.entries()) {
-    buffer.push(
+    writer.push(
       renders.fn({
         url: fn.url,
         name,

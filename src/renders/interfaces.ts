@@ -11,13 +11,14 @@ import {
   QueryParameter,
   BodyParameter,
   PathParameter,
-  Schema
+  Schema,
+  FormDataParameter
 } from 'swagger-schema-official'
 
 export const renderInterfaces = ({
   swagger,
   options,
-  buffer,
+  writer,
   fns,
   renders
 }: Context) => {
@@ -45,15 +46,19 @@ export const renderInterfaces = ({
           const queries: QueryParameter[] = []
           const bodies: BodyParameter[] = []
           const paths: PathParameter[] = []
+          const formData: FormDataParameter[] = []
           for (const parameter of op.parameters) {
             if (isRef(parameter)) {
               // not impl
+              console.log('ref is not supported')
             } else if (parameter.in === 'query') {
               queries.push(parameter)
             } else if (parameter.in === 'body') {
               bodies.push(parameter)
             } else if (parameter.in === 'path') {
               paths.push(parameter)
+            } else if (parameter.in === 'formData') {
+              formData.push(parameter)
             }
           }
 
@@ -61,17 +66,18 @@ export const renderInterfaces = ({
           const chunks = [
             queryHandler(renders.interface, queries, env),
             pathHandler(renders.interface, paths, env),
-            bodyHandler(renders.interface, bodies, env)
+            bodyHandler(renders.interface, bodies, env),
+            formDataHandler(renders.interface, formData, env)
           ]
-          chunks.forEach(chunk => chunk !== undefined && buffer.push(chunk))
+          chunks.forEach(chunk => writer.push(chunk))
         }
         // response type
         const res = op.responses['200']
         if (isRef(res)) {
           // not impl
         } else if (res.schema) {
-          const schema = options.schemaMapper(res.schema)
-          buffer.push(
+          const schema = options.responseInterceptor(res.schema)
+          writer.push(
             renders.interface({
               name: getName('response'),
               field: schema2Field(schema)
@@ -155,6 +161,35 @@ const bodyHandler: ParameterHandler<BodyParameter> = (
     name,
     description,
     field: schema2Field(schema)
+  })
+}
+
+// formData
+const formDataHandler: ParameterHandler<FormDataParameter> = (
+  render,
+  formData,
+  { op, getName }
+) => {
+  if (formData.length === 0) return undefined
+  const properties = formData.map(form => {
+    const { type, name, required, description } = form
+    let tsType = 'unknown'
+    if (type === 'string') {
+      tsType = 'string'
+    } else if (<string>type === 'file') {
+      tsType = 'Blob'
+    }
+    return <Field>{
+      name,
+      required,
+      type: tsType,
+      description
+    }
+  })
+  return render({
+    name: getName('formData'),
+    description: getInterfaceDesc(op),
+    field: { name: 'root', type: 'object', properties }
   })
 }
 

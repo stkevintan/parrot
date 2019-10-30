@@ -15,15 +15,24 @@ const parseUriTemplate = (
 }
 
 export interface RequestConfig extends AxiosRequestConfig {
-  path?: any
+  path?: any,
+  formData?: any
 } 
 
 const request = <R>(config: RequestConfig) => {
-  const parsedConfig = {
-    ...config,
-    url: parseUriTemplate(config.url, config.path)
+  const { formData } = config
+  if (formData instanceof FormData) {
+    config.data = config.formData
+  } else if (formData) {
+    config.data = new FormData()
+    for (const key of Object.keys(formData)) {
+      config.data.append(key, formData[key])
+    }
   }
   return client
-    .request<any, AxiosResponse<R>>(parsedConfig)
+    .request<any, AxiosResponse<R>>({
+      ...config,
+      url: parseUriTemplate(config.url, config.path)
+    })
     .then(ret => ret.data)
 }

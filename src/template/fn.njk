@@ -1,6 +1,6 @@
 
-{% macro params(query, body, path) %}
-  {{ ("path: " + path + ",") if path }}{{ ("params: " + query + ",") if query }}{{ ("data: " + body + ",") if body }}
+{% macro params(path, query, body, formData) %}
+  {{ ("path: " + path + ",") if path }}{{ ("params: " + query + ",") if query }}{{ ("data: " + body + ",") if body }}{{ ("formData: " + formData + "| FormData,") if formData }}
 {% endmacro %}
 
 
@@ -9,12 +9,14 @@
   * {{description}}
   */
 {% endif -%}
-function {{name}}({{ params(query, body, path) }} options: Partial<RequestConfig> = {}) {
+function {{name}}({{ params(path, query, body, formData) }} options: Partial<RequestConfig> = {}) {
   return request<{{ response | default("void") }}>({
     url: "{{url}}",
+    method: "{{ method }}",
     {{ "params," if query }}
     {{ "data," if body }}
     {{ "path," if path }}
+    {{ "formData," if formData }}
     ...options
   })
 }
