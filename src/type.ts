@@ -53,6 +53,7 @@ export interface Option {
   interfaceNameMapper?: (apiName: string, type: InterfaceType) => string
   responseInterceptor?: (schema: Schema) => Schema
   out?: string
+  skipBodyOfGet?: boolean
 }
 
 export interface FnDescr {

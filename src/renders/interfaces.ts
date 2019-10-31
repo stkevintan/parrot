@@ -54,7 +54,9 @@ export const renderInterfaces = ({
             } else if (parameter.in === 'query') {
               queries.push(parameter)
             } else if (parameter.in === 'body') {
-              bodies.push(parameter)
+              if (method !== 'get' || !options.skipBodyOfGet) {
+                bodies.push(parameter)
+              }
             } else if (parameter.in === 'path') {
               paths.push(parameter)
             } else if (parameter.in === 'formData') {

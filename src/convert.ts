@@ -18,6 +18,7 @@ const defaultOption = {
   apiNameMapper,
   tplRoot: __dirname + '/template',
   templates: {},
+  skipBodyOfGet: true,
   interfaceNameMapper,
   responseInterceptor,
   out: ''

@@ -149,6 +149,7 @@ export interface Option {
   interfaceNameMapper?: (apiName: string, type: InterfaceType) => string
   responseInterceptor?: (schema: Schema) => Schema
   out?: string
+  skipBodyOfGet?: boolean
 }
 ```
 
@@ -161,6 +162,7 @@ export interface Option {
 | interfaceNameMapper | generate the interface name                                                                                                                                                                      | `apiName` + `type`       |
 | responseInterceptor | a intercept function to preprocess the response schema before generate the interface, it is usefull to extract the exact response type that your api return like `{ code: 0, data: exact_data }` | `schema => schema`       |
 | out                 | the file path to write out                                                                                                                                                                       |                          |
+| skipBodyOfGet       | whether or not to skip the body parameters of get request                                                                                                                                        | true                     |
 
 ### Template
 
