@@ -8,18 +8,27 @@ import { Spec } from 'swagger-schema-official'
 const write = promisify(writeFile)
 
 export class Parrot {
-  static async fromRemote(url: string, headers?: ObjectOf<string>) {
+  static async fromHTTP(url: string, headers?: ObjectOf<string>) {
     const swagger = await request(url, headers)
     return new Parrot(swagger)
   }
 
   constructor(private swagger: Spec) {}
 
-  writeSwaggerJson = async (
+  writeSwagger = async (
     path: string,
-    stringify = JSON.stringify.bind(JSON)
+    options: {
+      stringify?: (value: any) => string
+      encoding?: string | null | undefined
+      mode?: string | number | undefined
+      flag?: string | undefined
+    } = {}
   ) => {
-    await write(path, stringify(this.swagger), { encoding: 'utf8' })
+    const stringify =
+      typeof options.stringify === 'function'
+        ? options.stringify
+        : JSON.stringify.bind(JSON)
+    await write(path, stringify(this.swagger), options)
   }
 
   convert = (options: Option) => {

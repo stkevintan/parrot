@@ -17,8 +17,12 @@ export class Writer {
     }
   }
 
-  get content() {
+  valueOf = () => {
     return this.buffer.join('')
+  }
+
+  toString = () => {
+    return this.valueOf()
   }
 
   done = () => {

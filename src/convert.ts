@@ -65,5 +65,5 @@ export const convert = async (swagger: Spec, options: Option) => {
 
   writer.done()
 
-  return writer.content
+  return writer.toString()
 }

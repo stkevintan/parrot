@@ -44,16 +44,19 @@ export const getEnumType = (schema: BaseSchema) => {
   return enums.join('|')
 }
 
+export const capitalize = (word: string) => {
+  return word.replace(/^[a-z]/, word => word.toUpperCase())
+}
+
 export const apiNameMapper = (path: string, method: Method) => {
   const seg = path
     .replace(/(^\/)|(\/$)|[{}]/g, '')
     .replace(/[\/_-](\w)/g, (_, word: string) => word.toUpperCase())
-    .replace(/^\w/, (word: string) => word.toUpperCase())
-  return `${method}${seg}`
+  return `${method}${capitalize(seg)}`
 }
 
 export const interfaceNameMapper = (apiName: string, type: InterfaceType) => {
-  return `${apiName}${type.replace(/^\w/, word => word.toUpperCase())}`
+  return `${capitalize(apiName)}${capitalize(type)}`
 }
 
 export const responseInterceptor = (schema: Schema): Schema => {

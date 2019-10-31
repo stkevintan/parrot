@@ -27,7 +27,7 @@ const tagMapper = (tag: string) => {
   }
 }
 
-Parrot.fromRemote(url, headers).then(parrot => parrot.convert({
+Parrot.fromHTTP(url, headers).then(parrot => parrot.convert({
   out: 'src/api.ts',
   tagMapper,
   templates: {
@@ -96,14 +96,21 @@ const swagger = fs.readFileSync('swagger.json', { encoding: 'utf8' })
 const parrot = new Parrot(swagger)
 
 // Option two: (retrive the swagger content from remote url)
-Parrot.fromRemote(url, headers).then(parrot => {
-  //...
-})
+Parrot.fromHTTP(url, headers).then(parrot => { })
 ```
 
 ## Method
 
-### `writeSwagger(path: string, stringify = JSON.stringify): Promise<void>`
+### `writeSwagger(path: string, options?: Option): Promise<void>`
+
+```ts
+type Option =  {
+  stringify?: (value: any) => string
+  encoding?: string | null
+  mode?: string | number 
+  flag?: string 
+}
+```
 
 write the swagger json into file which path indicated the location of the file and stringify function can be customized. eg: write swagger content into yaml format:
 
@@ -111,9 +118,9 @@ write the swagger json into file which path indicated the location of the file a
 import YAML from 'yamljs'
 import { Parrot } from '@stkevintan/parrot'
 
-Parrot.fromRemote(url, headers)
+Parrot.fromHTTP(url, headers)
   .then(parrot => {
-    return parrot.writeSwagger('./swagger.yaml', YAML.stringify.bind(YAML))
+    return parrot.writeSwagger('./swagger.yaml', { stringify: YAML.stringify.bind(YAML) })
   })
   .then(() => {
     console.log('done')
