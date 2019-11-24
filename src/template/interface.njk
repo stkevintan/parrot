@@ -23,7 +23,7 @@
   {% endfor -%}
 }
 {%- elif field.type === 'array' -%}
-{{ render_type(field.items) + '[]' }}
+{{ "Array<" + render_type(field.items) + ">" }}
 {%- else -%}
 {{ field.type }}
 {%- endif -%}
@@ -33,8 +33,9 @@
 {%- if field.type === 'object' -%}
 export interface {{ name }} {{ render_type(field) }}
 {%- elif field.type === 'array' -%}
-{{ render_interface(name+"Item", field.items) }}
-export type {{ name }} = {{ name + "Item[]" }}
+{# {{ render_interface(name+"Item", field.items) }} #}
+{# 注意这里最好不要使用 xx[]语法，因为如果xx刚好是枚举类型，则还需要一个括号 #}
+export type {{ name }} = {{ "Array<" + render_type(field.items) + ">" }}
 {%- else -%}
 export type {{name}} = {{ field.type }}
 {%- endif -%}

@@ -1,6 +1,6 @@
 {
   "name": "@stkevintan/parrot",
-  "version": "0.1.10",
+  "version": "0.2.10",
   "description": "convert yapi or swagger json to typescript code",
   "main": "dist/index",
   "scripts": {
@@ -14,5 +14,8 @@
     "@types/swagger-schema-official": "^2.0.19",
     "axios": "^0.19.0",
     "nunjucks": "^3.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.2"
   }
 }

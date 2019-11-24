@@ -2,14 +2,15 @@
 {% macro params(path, query, body, formData) %}
   {{ ("path: " + path + ",") if path }}{{ ("params: " + query + ",") if query }}{{ ("data: " + body + ",") if body }}{{ ("formData: " + formData + "| FormData,") if formData }}
 {% endmacro %}
-
-
-{% if description %}
+{%- for interface in interfaces -%}
+{{ interface }}
+{%- endfor -%}
+{%- if description -%}
 /**
   * {{description}}
   */
-{% endif -%}
-function {{name}}({{ params(path, query, body, formData) }} options: Partial<RequestConfig> = {}) {
+{%- endif -%}
+export function {{name}}({{ params(path, query, body, formData) }} options: Partial<RequestConfig> = {}) {
   return request<{{ response | default("void") }}>({
     url: "{{url}}",
     method: "{{ method }}",

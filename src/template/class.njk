@@ -1,0 +1,15 @@
+{%- if description %}
+/**
+  * {{description}}
+  */
+{% endif -%}
+export namespace {{ name }} {
+  {%- for method in methods %}
+    {{ method }}
+  {%- endfor %}
+}
+
+
+
+
+

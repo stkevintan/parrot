@@ -3,7 +3,7 @@
     "typeRoots": ["./node_modules/@types/", "./@types/"],
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "esnext",
+    "target": "es6",
     "declaration": true,
     "experimentalDecorators": true,
     "baseUrl": ".",
